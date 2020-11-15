@@ -1,0 +1,340 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Tutor Dashboard</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- Favicons -->
+<link rel="apple-touch-icon" href="/docs/4.5/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/docs/4.5/assets/img/favicons/manifest.json">
+<link rel="mask-icon" href="/docs/4.5/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
+<link rel="icon" href="/docs/4.5/assets/img/favicons/favicon.ico">
+<meta name="msapplication-config" content="/docs/4.5/assets/img/favicons/browserconfig.xml">
+<meta name="theme-color" content="#563d7c">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="css/tutor.css" rel="stylesheet">
+  </head>
+  <body>
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="padding-right:10px;">
+      <div class="sidebar-sticky pt-3">
+          <div class="container-fluid" style="padding-right: 0;">
+              <h2>TutorFirst</h2>
+
+          </div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <span data-feather="home"></span>
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="overview();">
+              <span data-feather="file"></span>
+               Overview
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="appointments();">
+              <span data-feather="file"></span>
+              My Appointments
+            </a>
+          </li>    
+        </ul>
+        <label for="logout-form"></label>
+            <form name="logout-form" class="nav-link" action="/logout">
+              <!-- <span data-feather="users"></span> -->
+              <button class="btn btn-light">Logout</button>
+            </form>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+<div id="overview">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Welcome, <%=tutorObj.fName %>!</h1>
+  </div>
+  <h1>Overview</h1>
+  <h2>Current Subject: <%= tutorObj.subject %></h2>
+  <form action="/subject" method="POST">
+  <label class="popup-labels" for="" id="subjectInput">Subject</label>
+            <select class="btn btn-sm btn-outline-secondary" id="subjects" name="subjects">
+                <option value="English">English</option>
+                <option value="Biology">Biology</option>
+                <option value="Math">Math</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+              </select>
+              <button class="btn btn-light">Save</button>
+            </form>
+            <h2>Personal Zoom Link: <%= tutorObj.zoom %></h2>
+            <form action="/zoom" method="POST">
+              <label for="">Zoom Link: </label>
+              <input type="text" name="zoomLink">
+              <button class="btn btn-light">Save</button>
+            </form>
+</div>
+        
+<div id="appointments">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Appointments</h1>
+      </div>
+    
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <h1 style="padding-bottom:10px ;">Edit your Availability</h1>
+        <button class="btn btn-sm btn-outline-secondary" onclick="addAvail();" id="availBtn">Add Availabilty +</button>
+      
+      </div>
+      <table class="avail-table"> 
+        <tr>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+          </tr>
+
+          <tr>
+              <td>
+                <% for (var i = 0; i < tutorObj.sunday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=sunday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.sunday[i] %></h1>
+                    <h1 class="time-banner"><%= tutorObj.sunday[i+1] %></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.monday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=monday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.monday[i] %></h1>
+                    <h1 class="time-banner"><%= tutorObj.monday[i+1] %></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.tuesday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=tuesday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.tuesday[i]%></h1>
+                    <h1 class="time-banner"><%= tutorObj.tuesday[i+1]%></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.wednesday.length; i=3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=wednesday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.wednesday[i]%></h1>
+                    <h1 class="time-banner"><%= tutorObj.wednesday[i+1]%></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.thursday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=thursday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.thursday[i]%></h1>
+                    <h1 class="time-banner"><%= tutorObj.thursday[i+1]%></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.friday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=friday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.friday[i]%></h1>
+                    <h1 class="time-banner"><%= tutorObj.friday[i+1]%></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+              <td>
+                <% for (var i = 0; i < tutorObj.saturday.length; i=i+3) {%>
+                  <div class="time-slot">
+                    <a href="/delete?DAY=saturday&INDEX=<%= i %>" style="float: right;">X</a>
+                    <h1 class="time-banner"><%= tutorObj.saturday[i]%></h1>
+                    <h1 class="time-banner"><%= tutorObj.saturday[i+1]%></h1>
+                  </div>
+                  <hr style="visibility: hidden;">
+                <% } %>
+              </td>
+          </tr>
+    </table>
+<div id="overlay">
+    <div id="popup-div"><h1>Add Availability</h1>
+        <button class="btn" onclick="close1();" id="ClosepopBtn">X</button>
+        <form action="/addAvail" method="POST">
+          <div class="row">
+            <label class="popup-labels" for="" id="dayInput">Day</label>
+            <select class="btn btn-sm btn-outline-secondary" id="days" name="days">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+            <div class="row">
+              <label class="popup-labels"for="startTime">Start Time</label>
+              <input class="popup-input" type="time" name="startTime" id="">
+            </div>
+          <div class="row">
+            <label class="popup-labels" for="endTime">End Time</label>
+            <input class="popup-input" type="time" name="endTime">
+          </div>
+          <button id="sub-avail" class="btn btn-light" type="submit">Submit</button>
+        </form>
+        <% if (message.length > 0) { %>
+            <div class="alert alert-danger">
+              <%= message %>
+            </div>
+        <% } %>
+    </div>
+</div>
+      
+      <h2 style="margin-top: 20px;">Your Scheduled Appointments: </h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Student Name</th>
+              <th>Appointment Time</th>
+              <th>Zoom Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < tutorObj.apptDates.length; i++) { %>
+              <tr> 
+              <td><%= tutorObj.apptDates[i] %></td>
+              <td><%= tutorObj.students[i] %></td>
+              <td><%= tutorObj.apptTimes[i] %></td>
+              <td><a href="<%= tutorObj.zoom %>" target="_blank">Room Link</a></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+<div id="assignments">
+    <h1>Assignments</h1> 
+</div>
+<div id="grades">
+    <h1>Grades</h1>
+</div>
+
+
+    </main>
+  </div>
+</div>
+<script>
+    overview();
+    
+    function overview() {
+        var overViewDiv = document.getElementById("overview")
+        var apptDiv = document.getElementById("appointments")
+        var assignment = document.getElementById("assignments")
+        var grades = document.getElementById("grades")
+        overViewDiv.style.display = "block"
+        apptDiv.style.display = "none"
+        assignment.style.display = "none"
+        grades.style.display = "none"
+    }
+
+    function appointments(){
+        var overViewDiv = document.getElementById("overview")
+        var apptDiv = document.getElementById("appointments")
+        var assignment = document.getElementById("assignments")
+        var grades = document.getElementById("grades")
+        apptDiv.style.display = "block"
+        overViewDiv.style.display = "none"
+        assignment.style.display = "none"
+        grades.style.display = "none"
+        
+    }
+    
+    function assignments(){
+        var overViewDiv = document.getElementById("overview")
+        var assignDiv = document.getElementById("assignments")
+        console.log(assignDiv);
+        var apptDiv = document.getElementById("appointments")
+        var grades = document.getElementById("grades")
+        overViewDiv.style.display = "none"
+        assignDiv.style.display = "block"
+        apptDiv.style.display = "none"
+        grades.style.display = "none"
+    }
+
+    function grades() {
+        var overViewDiv = document.getElementById("overview")
+        var apptDiv = document.getElementById("appointments")
+        var assignment = document.getElementById("assignments")
+        var grades = document.getElementById("grades")
+        apptDiv.style.display = "none"
+        overViewDiv.style.display = "none"
+        assignment.style.display = "none"
+        grades.style.display = "block"
+    }
+    function addAvail(){
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function close1(){
+        document.getElementById("overlay").style.display = "none";
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <script src="dashboard.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+
+</html>
